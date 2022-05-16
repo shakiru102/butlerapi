@@ -11,5 +11,5 @@ const schema = new mongoose_1.default.Schema({
     lastname: String,
     phonenumber: String,
 });
-const Admin = mongoose_1.default.model('users', schema);
+const Admin = mongoose_1.default.model('admins', schema);
 exports.default = Admin;

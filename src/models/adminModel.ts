@@ -10,6 +10,6 @@ const schema = new mongoose.Schema<userDetails>({
      phonenumber: String,
 })
 
-const Admin = mongoose.model<userDetails>('users', schema)
+const Admin = mongoose.model<userDetails>('admins', schema)
 
 export default Admin
