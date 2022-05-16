@@ -5,7 +5,7 @@ const signupAdminSchema = joi.object<userDetails>({
     email: joi.string().required().email(),
     firstname: joi.string().required(),
     lastname: joi.string().required(),
-    password: joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    password: joi.string().required().min(8),
     phonenumber: joi.string().required(),
 })
 
