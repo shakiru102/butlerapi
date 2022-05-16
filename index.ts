@@ -20,7 +20,9 @@ mongoose.connect(process.env.MONGO_URI, mongooseOptions)
 // @ts-ignore 
 .catch(err => console.log(err.message))
 
-app.use(cors())
+app.use(cors({
+    origin: '*'
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/api/v1', [AdminRoutes])

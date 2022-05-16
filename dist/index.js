@@ -21,7 +21,9 @@ mongoose_1.default.connect(process.env.MONGO_URI, mongooseOptions)
     .then(() => console.log('Mongoose connected'))
     // @ts-ignore 
     .catch(err => console.log(err.message));
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: '*'
+}));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/api/v1', [adminroutes_1.default]);
