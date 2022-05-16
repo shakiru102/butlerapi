@@ -9,12 +9,12 @@ const signupAdminSchema = joi_1.default.object({
     email: joi_1.default.string().required().email(),
     firstname: joi_1.default.string().required(),
     lastname: joi_1.default.string().required(),
-    password: joi_1.default.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+    password: joi_1.default.string().required().min(8),
     phonenumber: joi_1.default.string().required(),
 });
 const signinSchema = joi_1.default.object({
     email: joi_1.default.string().required().email(),
-    password: joi_1.default.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required().min(8)
+    password: joi_1.default.string().required().min(8)
 });
 const validateSigninSchema = (data) => signinSchema.validate(data);
 exports.validateSigninSchema = validateSigninSchema;
