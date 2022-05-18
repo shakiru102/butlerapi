@@ -9,6 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const adminroutes_1 = __importDefault(require("./src/routes/adminroutes"));
+const userroutes_1 = __importDefault(require("./src/routes/userroutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8080;
@@ -26,6 +27,6 @@ app.use((0, cors_1.default)({
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use('/api/v1', [adminroutes_1.default]);
+app.use('/api/v1', [adminroutes_1.default, userroutes_1.default]);
 app.get('/', (req, res) => res.status(200).send('Server is running'));
 server.listen(port, () => console.log('server runing on Port ' + port));

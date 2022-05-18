@@ -4,6 +4,7 @@ import cors from 'cors'
 import env from 'dotenv'
 import mongoose from 'mongoose'
 import AdminRoutes from './src/routes/adminroutes'
+import UserRoutes from './src/routes/userroutes'
 env.config()
 
 const app = express()
@@ -25,7 +26,7 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use('/api/v1', [AdminRoutes])
+app.use('/api/v1', [AdminRoutes, UserRoutes])
 app.get('/', (req: Request, res: Response) => res.status(200).send('Server is running'))
 
 server.listen(port, () => console.log('server runing on Port ' + port))

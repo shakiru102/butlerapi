@@ -1,20 +1,32 @@
 import joi from 'joi'
-import { userDetails } from '../../types'
+import { userDetails, adminDetails } from '../../types'
 
-const signupAdminSchema = joi.object<userDetails>({
+const signupAdminSchema = joi.object<adminDetails>({
     email: joi.string().required().email(),
     firstname: joi.string().required(),
     lastname: joi.string().required(),
     password: joi.string().required().min(8),
     phonenumber: joi.string().required(),
+    confirmPassword: joi.ref('password')
 })
 
-const signinSchema = joi.object<userDetails>({
+const signupUserSchema = joi.object<userDetails>({
+    email: joi.string().required().email(),
+    firstname: joi.string().required(),
+    lastname: joi.string().required(),
+    password: joi.string().required().min(8),
+    phonenumber: joi.string().required(),
+    confirmPassword: joi.ref('password'),
+    address: joi.string().required()
+})
+
+const signinSchema = joi.object<adminDetails>({
     email: joi.string().required().email(),
     password: joi.string().required().min(8)
     
 })
 
-export const validateSigninSchema = (data: userDetails) => signinSchema.validate(data)
+export const validateSigninSchema = (data: adminDetails | userDetails) => signinSchema.validate(data)
 
-export const validateSignupAdminSchema = (data: userDetails) => signupAdminSchema.validate(data)
+export const validateSignupAdminSchema = (data: adminDetails) => signupAdminSchema.validate(data)
+export const validateSignupUserSchema = (data: userDetails) => signupUserSchema.validate(data)

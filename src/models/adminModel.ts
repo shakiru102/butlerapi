@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
-import { userDetails } from '../../types'
+import { adminDetails } from '../../types'
 
 
-const schema = new mongoose.Schema<userDetails>({
+const schema = new mongoose.Schema<adminDetails>({
      email: String,
      password: String,
      firstname: String,
@@ -10,6 +10,7 @@ const schema = new mongoose.Schema<userDetails>({
      phonenumber: String,
 })
 
-const Admin = mongoose.model<userDetails>('admins', schema)
+
+const Admin = mongoose.model<adminDetails>('admins', schema)
 
 export default Admin
