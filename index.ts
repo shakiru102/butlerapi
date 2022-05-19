@@ -26,7 +26,7 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use('/api/v1', [AdminRoutes, UserRoutes])
+app.use('/api/v1', [AdminRoutes])
 app.get('/', (req: Request, res: Response) => res.status(200).send('Server is running'))
 
 server.listen(port, () => console.log('server runing on Port ' + port))
