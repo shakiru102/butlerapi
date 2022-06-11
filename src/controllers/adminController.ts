@@ -1,6 +1,8 @@
 import { Request, Response } from "express"
+import moment from "moment"
 import { userDetails } from "../../types"
 import Admin from "../models/adminModel"
+import Order from "../models/orderModel"
 import { confirmPassword, hashPassword } from "../utils/bcrypt"
 import { authUser, verifyUser } from "../utils/verify"
 
@@ -41,8 +43,7 @@ export const adminAuth = async (req: Request, res: Response) => {
          const token = req.header('Authorization')?.slice(7)
         if(!token) throw new Error('Unauthorized')
         const verifiedToken = verifyUser(token)
-        if(!verifiedToken) throw new Error('Unauthroized')
-     //    @ts-ignore
+        if(!verifiedToken.id) throw new Error('Unauthroized')
         const admin = await Admin.findById({ _id: verifiedToken.id }, { _id: 1, email: 1, firstname: 1, lastname: 1, phonenumber: 1 })
         if(!admin) throw new Error('Unauthorized') 
         res.status(200).json({ status: 'Success', adminDetails: admin })
@@ -51,4 +52,66 @@ export const adminAuth = async (req: Request, res: Response) => {
         console.log(error.message)
         res.status(400).send({ status: 'Failed', error: error.message })
     }
+ }
+
+ export const getAllOrders = async (req: Request, res: Response) => {
+      try {
+        const orders =  await Order.find({})
+         if(orders.length) return res.status(200).json({ status: 'Success', orders })
+         res.status(200).send({ status: 'Failed', msg: 'Can not get orders' })
+      } catch (error: any) {
+          res.status(400).send({ status: 'Failed', msg: error.message })
+      }
+ }
+
+ export const getStatusOrder = async (req: Request, res: Response) => {
+     const status = req.query.status
+    try {
+        switch (status) {
+            case 'Pending':
+              const getPending = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
+              return res.status(200).json({ status: 'Success' , order: getPending })
+             case 'Pickup':
+               const getPickup = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
+               return res.status(200).json({ status: 'Success', order: getPickup}) 
+             case 'Onging':
+               const getOnging = await Order.find({ status  }).sort({ pickUpDate: 1 })
+               return res.status(200).json({ status: 'Success', order: getOnging})
+             case 'Delivery':
+               const getDelivery = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
+               return res.status(200).json({ status: 'Success', order: getDelivery })     
+            default:
+             const getTask = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
+             return res.status(200).json({ status: 'Success', order: getTask })
+          }
+    } catch (error: any) {
+        res.status(400).send({ status: 'Failed', msg: error.message })
+    }
+ }
+
+ export const updateOrderStatus = async (req: Request, res: Response) => {
+     try {
+         const status = req.body.status
+         await Order.updateOne({ _id: req.params.orderID, status })
+         
+         switch (status) {
+            case 'Pending':
+              const getPending = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
+              return res.status(200).json({ status: 'Success' , order: getPending })
+             case 'Pickup':
+               const getPickup = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
+               return res.status(200).json({ status: 'Success', order: getPickup}) 
+             case 'Onging':
+               const getOnging = await Order.find({ status  }).sort({ pickUpDate: 1 })
+               return res.status(200).json({ status: 'Success', order: getOnging})
+             case 'Delivery':
+               const getDelivery = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
+               return res.status(200).json({ status: 'Success', order: getDelivery })     
+            default:
+             const getTask = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
+             return res.status(200).json({ status: 'Success', order: getTask })
+          }
+     } catch (error: any) {
+        res.status(400).send({ status: 'Failed', msg: error.message })
+     }
  }

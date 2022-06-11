@@ -2,14 +2,27 @@ import express, { Request, Response } from 'express'
 import http from  'http'
 import cors from 'cors'
 import env from 'dotenv'
+import socketIO from 'socket.io'
 import mongoose from 'mongoose'
 import AdminRoutes from './src/routes/adminroutes'
 import UserRoutes from './src/routes/userroutes'
+import { socket } from './src/socketIO'
+import moment from 'moment'
 env.config()
 
 const app = express()
 const port = process.env.PORT || 8080
 const server = http.createServer(app)
+// @ts-ignore
+export const io = socketIO(server, {
+    cors: {
+        origin: '*'
+    }
+})
+console.log(moment(Date.now()).format('MM-DD-YYYY'));
+
+socket(io)
+
 const mongooseOptions: object = {
     useUnifiedTopology : true,
 }

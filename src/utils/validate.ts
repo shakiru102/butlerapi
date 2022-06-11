@@ -26,7 +26,12 @@ const signinSchema = joi.object<adminDetails>({
     
 })
 
+const updateDateStatusSchema = joi.object<{ status: string }>({
+  status: joi.string().required()
+})
+
 export const validateSigninSchema = (data: adminDetails | userDetails) => signinSchema.validate(data)
 
 export const validateSignupAdminSchema = (data: adminDetails) => signupAdminSchema.validate(data)
 export const validateSignupUserSchema = (data: userDetails) => signupUserSchema.validate(data)
+export const validateUpdateStatus = (status: { status: string }) => updateDateStatusSchema.validate(status)
