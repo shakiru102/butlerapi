@@ -46,24 +46,24 @@ export interface OrderDetails {
   
     serviceType: PlanTypes ;
     servicePlan: "Subscription" | "One-off";
-    startDate: any;
+    startDate: string;
     description: string;
     apartmentType: string
     pickUpDay: OrderDays | OrderDays[];
-    pickUpDate: any
-    endDate: any;
+    pickUpDate: string;
+    endDate: string;
     userID: string;
     pickUpTime: string;
     deliveryDate: any
     quantity: number;
     items: ItemsProps[];
     createdAt: any;
-    frequency: Number;
-    frequencyCompleted: Number;
+    frequency: number;
+    frequencyCompleted: number;
     username: string;
     status: StatusProps;
     phonenumber: string;
     pickUpAddress: string;
     deliveryAddress: string;
-    amount: Number
+    amount: number
 }

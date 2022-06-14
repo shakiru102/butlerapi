@@ -12,7 +12,10 @@ export const socket = io => {
 
       // Initiate Users
       socket.on('initiateUser', userID => socket.join(userID))
-
+      
+      socket.on('testing', () => {
+        io.emit('receivetest', 'whats up users')
+      })
       
      
   //  Initiate Payment
@@ -35,13 +38,13 @@ export const socket = io => {
           }
        }
        else socket.broadcast.to('admin').emit('one-off', { count: 1 })
+       if(order.pickUpDate === moment().format('MM-DD-YYYY')) socket.broadcast.to('admin').emit('Pending', { count: 1 })
        io.to(order.userID).emit('saved', { acknowlegde: true })
         } catch (error: any) {
           console.log(error.message);
           io.to(order.userID).emit('err', { acknowlegde: false })
         }
        
-        if(order.pickUpDate === moment().format('MM-DD-YYYY')) socket.broadcast.to('admin').emit('Pending', { count: 1 })
 
       })
   
@@ -78,3 +81,41 @@ export const socket = io => {
     
 }
 
+
+// {
+//   "serviceType": "Laundry" ,
+//   "servicePlan": "Subscription",
+//   "startDate": "12-06-2022",
+//   "description": "string",
+//   "pickUpDay": "OrderDays | OrderDays[]",
+//   "pickUpDate": "14-06-2022",
+//   "endDate": "14-07-2022",
+//   "userID": "456",
+//   "pickUpTime": "8-9am",
+//   "deliveryDate": "16-06-2022",
+//   "quantity": 5,
+//   "items": "ItemsProps[]",
+//   "frequency": 4,
+//   "frequencyCompleted": 0,
+//   "username": "James",
+//   "phonenumber": "string",
+//   "pickUpAddress": "string",
+//   "deliveryAddress": "string",
+//   "amount": 5000
+// }
+// {
+//   "serviceType": "Laundry" ,
+//   "servicePlan": "One-off",
+//   "description": "string",
+//   "pickUpDay": "OrderDays | OrderDays[]",
+//   "pickUpDate": "14-06-2022",
+//   "userID": "123",
+//   "pickUpTime": "8-9am",
+//   "deliveryDate": "16-06-2022",
+//   "items": "ItemsProps[]",
+//   "username": "James",
+//   "phonenumber": "string",
+//   "pickUpAddress": "string",
+//   "deliveryAddress": "string",
+//   "amount": 5000
+// }
