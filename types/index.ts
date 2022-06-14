@@ -65,5 +65,6 @@ export interface OrderDetails {
     phonenumber: string;
     pickUpAddress: string;
     deliveryAddress: string;
-    amount: number
+    amount: number;
+    reference: string
 }
