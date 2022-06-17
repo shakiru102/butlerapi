@@ -1,5 +1,5 @@
 import joi from 'joi'
-import { userDetails, adminDetails } from '../../types'
+import { userDetails, adminDetails, OrderDetails } from '../../types'
 
 const signupAdminSchema = joi.object<adminDetails>({
     email: joi.string().required().email(),
@@ -28,6 +28,22 @@ const signinSchema = joi.object<adminDetails>({
 
 const updateDateStatusSchema = joi.object<{ status: string }>({
   status: joi.string().required()
+})
+const subscriptionSchema = joi.object<OrderDetails>({
+    amount: joi.number().required(),
+    deliveryAddress: joi.string().required(),
+    deliveryDate: joi.string().required(),
+    description: joi.string().required(),
+    endDate: joi.string().required(),
+    frequency: joi.number().required(),
+    frequencyCompleted: joi.number().required(),
+    phonenumber: joi.string().required(),
+    pickUpAddress: joi.string().required(),
+    items: joi.array().required(),
+    pickUpDate: joi.string().required(),
+    pickUpDay: joi.string().required(),
+    quantity: joi.string().required(),
+
 })
 
 export const validateSigninSchema = (data: adminDetails | userDetails) => signinSchema.validate(data)

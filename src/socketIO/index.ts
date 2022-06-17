@@ -23,14 +23,15 @@ export const socket = io => {
        
 
         try {
-          await Order.create({...order, status: 'Pending' })
        if(order.servicePlan === 'Subscription') {
+        
+        await Order.create({...order, status: 'Pending' })
           switch(order.serviceType) {
              case 'Food' :
               socket.broadcast.to('admin').emit('Food', { count: 1 })
               break
             case 'Home Cleaning' :
-                socket.broadcast.to('admin').emit('Home Cleaning', { count: 1 })
+                socket.broadcast.to('admin').emit('Cleaning', { count: 1 })
                break
             default :
                 socket.broadcast.to('admin').emit('Laundry', { count: 1 })
@@ -38,11 +39,12 @@ export const socket = io => {
           }
        }
        else socket.broadcast.to('admin').emit('one-off', { count: 1 })
+       console.log(order.pickUpDate, moment().format('MM-DD-YYYY') );
        if(order.pickUpDate === moment().format('MM-DD-YYYY')) socket.broadcast.to('admin').emit('Pending', { count: 1 })
        io.to(order.userID).emit('saved', { acknowlegde: true })
         } catch (error: any) {
           console.log(error.message);
-          io.to(order.userID).emit('err', { acknowlegde: false })
+          io.to(order.userID).emit('err', { acknowlegde: false, msg: error.message })
         }
        
 
