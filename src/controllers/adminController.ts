@@ -70,16 +70,16 @@ export const adminAuth = async (req: Request, res: Response) => {
     try {
         switch (status) {
             case 'Pending':
-              const getPending = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
+              const getPending = await Order.find({ status  }).sort({ pickUpDate: 1 })
               return res.status(200).json({ status: 'Success' , order: getPending })
              case 'Pickup':
                const getPickup = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
                return res.status(200).json({ status: 'Success', order: getPickup}) 
-             case 'Onging':
+             case 'Ongoing':
                const getOnging = await Order.find({ status  }).sort({ pickUpDate: 1 })
                return res.status(200).json({ status: 'Success', order: getOnging})
              case 'Delivery':
-               const getDelivery = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
+               const getDelivery = await Order.find({ deliveryDate: moment().format('MM-DD-YYYY') })
                return res.status(200).json({ status: 'Success', order: getDelivery })     
             default:
              const getTask = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })

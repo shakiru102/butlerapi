@@ -40,7 +40,7 @@ export const socket = io => {
        }
        else socket.broadcast.to('admin').emit('one-off', { count: 1 })
        console.log(order.pickUpDate, moment().format('MM-DD-YYYY') );
-       if(order.pickUpDate === moment().format('MM-DD-YYYY')) socket.broadcast.to('admin').emit('Pending', { count: 1 })
+       socket.broadcast.to('admin').emit('Pending', { count: 1 })
        io.to(order.userID).emit('saved', { acknowlegde: true })
         } catch (error: any) {
           console.log(error.message);
