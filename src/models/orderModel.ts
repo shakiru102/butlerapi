@@ -27,7 +27,8 @@ const orderSchema = new Schema<OrderDetails>({
      status: String,
      deliveryAddress: String,
      pickUpAddress: String,
-     reference: String
+     reference: String,
+     amount: Number
 })
 
  const Order =  model<OrderDetails>('orders', orderSchema)
