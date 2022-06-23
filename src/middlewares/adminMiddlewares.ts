@@ -9,9 +9,13 @@ export const adminSignupValidation = ( req: Request, res: Response, next: NextFu
 }
 
 export const adminStatusValidation = async ( req: Request, res: Response, next: NextFunction) => {
-    const order = await Order.findById({ _id: req.params.statusID })
-    if(!order) return res.status(400).send({ status: 'Failed', error: 'Invalid order id parameter' })
+    try {
+        const order = await Order.findById({ _id: req.params.orderID })
+    if(!order) throw new Error('Invalid order id parameter')
     const { error } = validateUpdateStatus(req.body)
-    if(error) return res.status(400).send({ status: 'Failed', error: error.details[0].message })
+    if(error) return res.status(400).send(error.details[0].message)
     next()
+    } catch (error: any) {
+        return res.status(400).send({ status: 'Failed', error: 'Invalid order id parameter' })
+    }
 }

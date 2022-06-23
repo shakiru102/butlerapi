@@ -9,7 +9,7 @@ router.post('/admin/signin', signInValidation, adminSignin)
 router.get('/admin/auth', adminAuth)
 router.get('/admin/getOrders', getAllOrders)
 router.get('/admin/currentStatusOrder', getStatusOrder)
-router.put('/admin/updeteOrder', adminStatusValidation , updateOrderStatus)
+router.post('/admin/:orderID/updeteOrder', adminStatusValidation , updateOrderStatus)
 
 
 
