@@ -2,6 +2,7 @@ import moment from "moment"
 import { Socket } from "socket.io"
 import { OrderDetails, StatusProps } from "../../types"
 import Order from "../models/orderModel"
+import { validateHomeCleaningOneOffSchemaData, validateHomeCleaningSubscriptionSchemaData, validateLaundryOneOffData, validateLaundrySubscriptionData } from "../utils/validate"
 
 // @ts-ignore
 export const socket = io => {
@@ -23,31 +24,41 @@ export const socket = io => {
        
 
         try {
-       if(order.servicePlan === 'Subscription') {
         
-        await Order.create({...order, status: 'Pending' })
           switch(order.serviceType) {
              case 'Food' :
+              await Order.create({...order, status: 'Pending' })
               socket.broadcast.to('admin').emit('Food', { count: 1 })
               break
-            case 'Home Cleaning' :
+            case 'Cleaning' :
+              if(order.servicePlan === 'Subscription') {
+                const { error } = validateHomeCleaningSubscriptionSchemaData(order)
+                if(error) throw new Error(error.details[0].message)
+              } else {
+                const { error } = validateHomeCleaningOneOffSchemaData(order)
+                if(error) throw new Error(error.details[0].message)
+              }
+              await Order.create({...order, status: 'Pending' })
                 socket.broadcast.to('admin').emit('Cleaning', { count: 1 })
                break
             default :
+            if(order.servicePlan === 'Subscription') {
+              const { error } = validateLaundrySubscriptionData(order)
+              if(error) throw new Error(error.details[0].message)
+            } else {
+              const { error } = validateLaundryOneOffData(order)
+              if(error) throw new Error(error.details[0].message)
+            }
+              await Order.create({...order, status: 'Pending' })
                 socket.broadcast.to('admin').emit('Laundry', { count: 1 })
               break 
-          }
        }
-       else socket.broadcast.to('admin').emit('one-off', { count: 1 })
-       console.log(order.pickUpDate, moment().format('MM-DD-YYYY') );
        socket.broadcast.to('admin').emit('Pending', { count: 1 })
        io.to(order.userID).emit('saved', { acknowlegde: true })
         } catch (error: any) {
           console.log(error.message);
           io.to(order.userID).emit('err', { acknowlegde: false, msg: error.message })
         }
-       
-
       })
   
       //  Status Controllers

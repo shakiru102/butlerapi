@@ -30,7 +30,7 @@ export type PickUpDay = 'Sunday'
 | 'Friday'
 | 'Saturday'
 
-export type PlanTypes = "Laundry" | "Home Cleaning" | "Food"
+export type PlanTypes = "Laundry" | "Cleaning" | "Food"
 
 interface ItemsProps {
     name: string;
@@ -40,7 +40,7 @@ interface ItemsProps {
 
 export type OrderDays = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday"
 
-export type StatusProps = "Pending" | "Pickup" | "Onging" | "Delivery" | "Complete" | "Canceled"
+export type StatusProps = "Pending" | "Pickup" | "Onging" | "Delivery" | "Complete" | "Cancelled"
 
 export interface OrderDetails {
   
@@ -66,5 +66,5 @@ export interface OrderDetails {
     pickUpAddress: string;
     deliveryAddress: string;
     amount: number;
-    reference: string
+    reference: string;
 }

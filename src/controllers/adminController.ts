@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import moment from "moment"
-import { userDetails } from "../../types"
+import { io } from "../.."
+import { StatusProps, userDetails } from "../../types"
 import Admin from "../models/adminModel"
 import Order from "../models/orderModel"
 import { confirmPassword, hashPassword } from "../utils/bcrypt"
@@ -92,27 +93,20 @@ export const adminAuth = async (req: Request, res: Response) => {
 
  export const updateOrderStatus = async (req: Request, res: Response) => {
      try {
-         const status = req.body.status
+         const status = req.query.status
          await Order.updateOne({ _id: req.params.orderID, status })
          
-         switch (status) {
-            case 'Pending':
-              const getPending = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
-              return res.status(200).json({ status: 'Success' , order: getPending })
-             case 'Pickup':
-               const getPickup = await Order.find({ status , pickUpDate: moment().format('MM-DD-YYYY') })
-               return res.status(200).json({ status: 'Success', order: getPickup}) 
-             case 'Onging':
-               const getOnging = await Order.find({ status  }).sort({ pickUpDate: 1 })
-               return res.status(200).json({ status: 'Success', order: getOnging})
-             case 'Delivery':
-               const getDelivery = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
-               return res.status(200).json({ status: 'Success', order: getDelivery })     
-            default:
-             const getTask = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
-             return res.status(200).json({ status: 'Success', order: getTask })
-          }
+         if(status === 'Pending') io.emit('Pending', { count: 1 })
+         if(status === 'Pickup') io.emit('Pickup', { count: 1 })
+         if(status === 'Onging') io.emit('Ongoing', { count: 1 })
+         if(status === 'Delivery') io.emit('Delivery', { count: 1 })
+         if(status === 'Complete') io.emit('Complete', { count: 1 })
+         else io.emit('Cancelled', { count: 1 })
      } catch (error: any) {
         res.status(400).send({ status: 'Failed', msg: error.message })
      }
  }
+
+ export const updateSubscriptionData = async (req: Request, res: Response) => {
+    
+ } 

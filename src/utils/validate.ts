@@ -29,25 +29,117 @@ const signinSchema = joi.object<adminDetails>({
 const updateDateStatusSchema = joi.object<{ status: string }>({
   status: joi.string().required()
 })
-const subscriptionSchema = joi.object<OrderDetails>({
+
+const laundrySubscriptionSchema = joi.object<OrderDetails>({
     amount: joi.number().required(),
     deliveryAddress: joi.string().required(),
     deliveryDate: joi.string().required(),
     description: joi.string().required(),
     endDate: joi.string().required(),
     frequency: joi.number().required(),
-    frequencyCompleted: joi.number().required(),
     phonenumber: joi.string().required(),
     pickUpAddress: joi.string().required(),
     items: joi.array().required(),
     pickUpDate: joi.string().required(),
     pickUpDay: joi.string().required(),
-    quantity: joi.string().required(),
+    quantity: joi.number().required(),
+    pickUpTime: joi.string().required(),
+    reference: joi.string().required(),
+    servicePlan: joi.string().required(),
+    serviceType: joi.string().required(),
+    startDate: joi.string().required(),
+    userID: joi.string().required(),
+    username: joi.string().required(),
+    frequencyCompleted: joi.number().required()
+})
+const laundryOneOffSchema = joi.object<OrderDetails>({
+    amount: joi.number().required(),
+    deliveryAddress: joi.string().required(),
+    deliveryDate: joi.string().required(),
+    description: joi.string().required(),
+    phonenumber: joi.string().required(),
+    pickUpAddress: joi.string().required(),
+    items: joi.array().required(),
+    pickUpDate: joi.string().required(),
+    pickUpDay: joi.string().required(),
+    pickUpTime: joi.string().required(),
+    reference: joi.string().required(),
+    servicePlan: joi.string().required(),
+    serviceType: joi.string().required(),
+    userID: joi.string().required(),
+    username: joi.string().required()
+})
+
+const homeCleaningSubscriptionSchema = joi.object<OrderDetails>({
+    amount: joi.number().required(),
+    deliveryAddress: joi.string().required(),
+    deliveryDate: joi.string().required(),
+    description: joi.string().required(),
+    endDate: joi.string().required(),
+    frequency: joi.number().required(),
+    phonenumber: joi.string().required(),
+    items: joi.array().required(),
+    pickUpTime: joi.string().required(),
+    reference: joi.string().required(),
+    servicePlan: joi.string().required(),
+    serviceType: joi.string().required(),
+    startDate: joi.string().required(),
+    userID: joi.string().required(),
+    username: joi.string().required(),
+    apartmentType: joi.string().required(),
+    frequencyCompleted: joi.number().required()
 
 })
+
+const homeCleaningOneOffSchema = joi.object<OrderDetails>({
+    amount: joi.number().required(),
+    deliveryAddress: joi.string().required(),
+    deliveryDate: joi.string().required(),
+    description: joi.string().required(),
+    frequency: joi.number().required(),
+    phonenumber: joi.string().required(),
+    items: joi.array().required(),
+    pickUpTime: joi.string().required(),
+    reference: joi.string().required(),
+    servicePlan: joi.string().required(),
+    serviceType: joi.string().required(),
+    userID: joi.string().required(),
+    username: joi.string().required(),
+    apartmentType: joi.string().required()
+})
+
+// const subscriptionSchema = joi.object<OrderDetails>({
+//     amount: joi.number().required(),
+//     deliveryAddress: joi.string().required(),
+//     deliveryDate: joi.string().required(),
+//     description: joi.string().required(),
+//     endDate: joi.string().required(),
+//     frequency: joi.number().required(),
+//     frequencyCompleted: joi.number().required(),
+//     phonenumber: joi.string().required(),
+//     pickUpAddress: joi.string().required(),
+//     items: joi.array().required(),
+//     pickUpDate: joi.string().required(),
+//     pickUpDay: joi.string().required(),
+//     quantity: joi.string().required(),
+//     apartmentType: joi.string().required(),
+//     pickUpTime: joi.string().required(),
+//     reference: joi.string().required(),
+//     servicePlan: joi.string().required(),
+//     serviceType: joi.string().required(),
+//     startDate: joi.string().required(),
+//     status: joi.string().required(),
+//     userID: joi.string().required(),
+//     username: joi.string().required()
+
+// })
 
 export const validateSigninSchema = (data: adminDetails | userDetails) => signinSchema.validate(data)
 
 export const validateSignupAdminSchema = (data: adminDetails) => signupAdminSchema.validate(data)
 export const validateSignupUserSchema = (data: userDetails) => signupUserSchema.validate(data)
 export const validateUpdateStatus = (status: { status: string }) => updateDateStatusSchema.validate(status)
+export const validateLaundrySubscriptionData = (data: OrderDetails) => laundrySubscriptionSchema.validate(data)
+export const validateLaundryOneOffData = (data: OrderDetails) => laundryOneOffSchema.validate(data)
+export const validateHomeCleaningSubscriptionSchemaData = (data: OrderDetails) => homeCleaningSubscriptionSchema.validate(data)
+export const validateHomeCleaningOneOffSchemaData = (data: OrderDetails) => homeCleaningOneOffSchema.validate(data)
