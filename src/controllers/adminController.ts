@@ -100,7 +100,7 @@ export const adminAuth = async (req: Request, res: Response) => {
          if(status === 'Ongoing') io.emit('Ongoing', { count: 1 })
          if(status === 'Delivery') io.emit('Delivery', { count: 1 })
          if(status === 'Complete') io.emit('Complete', { count: 1 })
-         else io.emit('Cancelled', { count: 1 })
+         if(status === 'Cancelled') io.emit('Cancelled', { count: 1 })
          res.status(200).json({ status: 'Success', msg: 'Status updated successfully.' })
      } catch (error: any) {
         res.status(400).send({ status: 'Failed', msg: error.message })
