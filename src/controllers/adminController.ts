@@ -106,16 +106,19 @@ export const adminAuth = async (req: Request, res: Response) => {
                 io.emit('Pending', { count: 1 })
                 break;
             case 'Pickup':
-                io.emit('Pickup', { count: 1 })
+                const getPickup = await Order.findOne({ _id: req.params.orderID, pickUpDate: moment().format('MM-DD-YYYY') })
+               if(getPickup) io.emit('Pickup', { count: 1 })
                 break;
             case 'Ongoing':
                 io.emit('Ongoing', { count: 1 })
                 break;
             case 'Delivery':
-                io.emit('Delivery', { count: 1 })
+               const getDelivery = await Order.findOne({ _id: req.params.orderID, deliveryDate: moment().format('MM-DD-YYYY') })
+               if(getDelivery) io.emit('Delivery', { count: 1 })
                 break;  
             case 'Complete':
-                io.emit('Complete', { count: 1 })
+               const getComplete = await Order.findOne({ _id: req.params.orderID, deliveryDate: moment().format('MM-DD-YYYY') })
+               if(getComplete) io.emit('Complete', { count: 1 })
                 break;     
             default:
                 io.emit('Cancelled', { count: 1 })
