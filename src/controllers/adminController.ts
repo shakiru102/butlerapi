@@ -94,13 +94,31 @@ export const adminAuth = async (req: Request, res: Response) => {
  export const updateOrderStatus = async (req: Request, res: Response) => {
      try {
          const status: StatusProps = req.body.status
+
+         const isExist = await Order.findOne({ _id: req.params.orderID, status })
+         if(!isExist){
         await Order.updateOne({ _id: req.params.orderID },{ $set: { status: status } })
-         if(status === 'Pending') io.emit('Pending', { count: 1 })
-         if(status === 'Pickup') io.emit('Pickup', { count: 1 })
-         if(status === 'Ongoing') io.emit('Ongoing', { count: 1 })
-         if(status === 'Delivery') io.emit('Delivery', { count: 1 })
-         if(status === 'Complete') io.emit('Complete', { count: 1 })
-         if(status === 'Cancelled') io.emit('Cancelled', { count: 1 })
+        switch (status) {
+            case 'Pending':
+                io.emit('Pending', { count: 1 })
+                break;
+            case 'Pickup':
+                io.emit('Pickup', { count: 1 })
+                break;
+            case 'Ongoing':
+                io.emit('Ongoing', { count: 1 })
+                break;
+            case 'Delivery':
+                io.emit('Delivery', { count: 1 })
+                break;  
+            case 'Complete':
+                io.emit('Complete', { count: 1 })
+                break;     
+            default:
+                io.emit('Cancelled', { count: 1 })
+                break;
+        }
+         }
          res.status(200).json({ status: 'Success', msg: 'Status updated successfully.' })
      } catch (error: any) {
         res.status(400).send({ status: 'Failed', msg: error.message })
