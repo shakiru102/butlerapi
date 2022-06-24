@@ -97,7 +97,7 @@ export const adminAuth = async (req: Request, res: Response) => {
         await Order.updateOne({ _id: req.params.orderID },{ $set: { status: status } })
          if(status === 'Pending') io.emit('Pending', { count: 1 })
          if(status === 'Pickup') io.emit('Pickup', { count: 1 })
-         if(status === 'Onging') io.emit('Ongoing', { count: 1 })
+         if(status === 'Ongoing') io.emit('Ongoing', { count: 1 })
          if(status === 'Delivery') io.emit('Delivery', { count: 1 })
          if(status === 'Complete') io.emit('Complete', { count: 1 })
          else io.emit('Cancelled', { count: 1 })

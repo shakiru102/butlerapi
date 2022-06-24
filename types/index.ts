@@ -40,7 +40,7 @@ interface ItemsProps {
 
 export type OrderDays = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday"
 
-export type StatusProps = "Pending" | "Pickup" | "Onging" | "Delivery" | "Complete" | "Cancelled"
+export type StatusProps = "Pending" | "Pickup" | "Ongoing" | "Delivery" | "Complete" | "Cancelled"
 
 export interface OrderDetails {
   
