@@ -81,9 +81,12 @@ export const adminAuth = async (req: Request, res: Response) => {
                return res.status(200).json({ status: 'Success', order: getOnging})
              case 'Delivery':
                const getDelivery = await Order.find({ deliveryDate: moment().format('MM-DD-YYYY') })
-               return res.status(200).json({ status: 'Success', order: getDelivery })     
+               return res.status(200).json({ status: 'Success', order: getDelivery })
+            case 'Complete':
+               const getComplete = await Order.find({ deliveryDate: moment().format('MM-DD-YYYY') })
+               return res.status(200).json({ status: 'Success', order: getComplete })      
             default:
-             const getTask = await Order.find({ status , deliveryDate: moment().format('MM-DD-YYYY') })
+             const getTask = await Order.find({ status })
              return res.status(200).json({ status: 'Success', order: getTask })
           }
     } catch (error: any) {
@@ -124,7 +127,3 @@ export const adminAuth = async (req: Request, res: Response) => {
         res.status(400).send({ status: 'Failed', msg: error.message })
      }
  }
-
- export const updateSubscriptionData = async (req: Request, res: Response) => {
-
- } 
