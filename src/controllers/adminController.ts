@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import moment from "moment"
 import { io } from "../.."
-import { StatusProps, userDetails } from "../../types"
+import { StatusProps, updateSubscriptionProps, userDetails } from "../../types"
 import Admin from "../models/adminModel"
 import Order from "../models/orderModel"
 import { confirmPassword, hashPassword } from "../utils/bcrypt"
@@ -130,3 +130,31 @@ export const adminAuth = async (req: Request, res: Response) => {
         res.status(400).send({ status: 'Failed', msg: error.message })
      }
  }
+export const updateSubscriptionPickup = async (req: Request, res: Response) => {
+
+    const { subscriptionType, setPickupDate }: updateSubscriptionProps = req.body
+   try {
+    switch (subscriptionType) {
+        case 'Laundry':
+            const deliverDate = moment(setPickupDate, 'MM-DD-YYYY').add(2, 'days').format('MM-DD-YYYY')
+            await Order.updateOne(
+                { _id: req.params.orderID }, 
+                { $set: { pickUpDate: setPickupDate, deliveryDate: deliverDate, status: 'Pickup' }, $inc: { frequencyCompleted: 1 } })
+                if(setPickupDate === moment().format('MM-DD-YYYY')) io.emit('Pickup', { count: 1 })
+            return res.status(200).json({ status: 'Success', msg: 'Pickup updated successfully.' })
+        default:
+            await Order.updateOne(
+                { _id: req.params.orderID }, 
+                { $set: { pickUpDate: setPickupDate, deliveryDate: setPickupDate, status: 'Pickup' }, $inc: { frequencyCompleted: 1 } })
+                if (setPickupDate === moment().format('MM-DD-YYYY')) {
+                    io.emit('Pickup', { count: 1 })
+                    io.emit('Delivery', { count: 1 })
+                }
+            return res.status(200).json({ status: 'Success', msg: 'Pickup updated successfully.' })
+    }
+   } catch (error: any) {
+    return res.status(400).json({ status: 'Failed', msg: 'Pickup update was not successful.' })
+    
+   }
+  
+}

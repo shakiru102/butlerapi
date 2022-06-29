@@ -68,3 +68,8 @@ export interface OrderDetails {
     amount: number;
     reference: string;
 }
+
+export interface updateSubscriptionProps {
+    setPickupDate: string;
+    subscriptionType: PlanTypes
+}

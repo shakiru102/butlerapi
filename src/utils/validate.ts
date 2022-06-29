@@ -1,5 +1,5 @@
 import joi from 'joi'
-import { userDetails, adminDetails, OrderDetails } from '../../types'
+import { userDetails, adminDetails, OrderDetails, updateSubscriptionProps } from '../../types'
 
 const signupAdminSchema = joi.object<adminDetails>({
     email: joi.string().required().email(),
@@ -74,6 +74,8 @@ const homeCleaningSubscriptionSchema = joi.object<OrderDetails>({
     amount: joi.number().required(),
     deliveryAddress: joi.string().required(),
     deliveryDate: joi.string().required(),
+    pickUpDate: joi.string().required(),
+    pickUpDay: joi.string().required(),
     description: joi.string().required(),
     endDate: joi.string().required(),
     frequency: joi.number().required(),
@@ -95,6 +97,8 @@ const homeCleaningOneOffSchema = joi.object<OrderDetails>({
     amount: joi.number().required(),
     deliveryAddress: joi.string().required(),
     deliveryDate: joi.string().required(),
+    pickUpDate: joi.string().required(),
+    pickUpDay: joi.string().required(),
     description: joi.string().required(),
     frequency: joi.number().required(),
     phonenumber: joi.string().required(),
@@ -106,6 +110,11 @@ const homeCleaningOneOffSchema = joi.object<OrderDetails>({
     userID: joi.string().required(),
     username: joi.string().required(),
     apartmentType: joi.string().required()
+})
+
+const updateSubscriptionSchema = joi.object<updateSubscriptionProps>({
+    setPickupDate: joi.string().required(),
+    subscriptionType: joi.string().required()
 })
 
 // const subscriptionSchema = joi.object<OrderDetails>({
@@ -143,3 +152,4 @@ export const validateLaundrySubscriptionData = (data: OrderDetails) => laundrySu
 export const validateLaundryOneOffData = (data: OrderDetails) => laundryOneOffSchema.validate(data)
 export const validateHomeCleaningSubscriptionSchemaData = (data: OrderDetails) => homeCleaningSubscriptionSchema.validate(data)
 export const validateHomeCleaningOneOffSchemaData = (data: OrderDetails) => homeCleaningOneOffSchema.validate(data)
+export const validateSubcriptionUpdate = (data: updateSubscriptionProps) => updateSubscriptionSchema.validate(data)
