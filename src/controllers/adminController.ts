@@ -6,6 +6,9 @@ import Admin from "../models/adminModel"
 import Order from "../models/orderModel"
 import { confirmPassword, hashPassword } from "../utils/bcrypt"
 import { authUser, verifyUser } from "../utils/verify"
+import Sendchamp from "sendchamp-sdk"
+
+const sms = new Sendchamp({ publicKey: `sendchamp_live_$2y$10$A3quLpp9DK7zOcdp1kX4t.XRyp.67rst3gLuV.W5LtlgYCeTCnQDS` })
 
 export const adminSignup = async (req: Request, res: Response) => {
 
@@ -157,4 +160,55 @@ export const updateSubscriptionPickup = async (req: Request, res: Response) => {
     
    }
   
+}
+
+export const forgetUserPassword = async (req: Request, res: Response) => {
+    const otpMail = sms.VERIFICATION
+    try {
+       const verifyEmail = await Admin.findOne({ email: req.body.email })
+       if(!verifyEmail) throw new Error(JSON.stringify('This email is not registered'))
+       //  @ts-ignore
+      const reference = await otpMail.sendOTP({ channel: 'email', expiration_time: 5, token_type: "numeric", token_length: 6, customer_email_address: req.body.email, sender: 'butlerdevelopers@gmail.com', meta_data: {
+          customer_email_address: req.body.email
+      }  })
+      console.log(reference);
+      if(reference.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: reference.message, errMsg: reference.data}))
+      res.send({ status: 'Success',msg: 'OTP sent', reference: reference.data.reference })
+    } catch (error: any) {
+        console.log(error.message);
+        res.send(JSON.parse(error.message))
+        
+    }
+}
+
+export const verifyOtp = async (req: Request, res: Response) => {
+   const otpMail = sms.VERIFICATION
+   
+   try {
+       const verifyOtp = await otpMail.verifyOTP({ verification_code: req.body.code, verification_reference: req.body.reference })
+       console.log(verifyOtp);
+       if(verifyOtp.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: verifyOtp.message, errMsg: verifyOtp.data }))
+       // @ts-ignore
+       const userEmail = await Admin.findOne({ email: verifyOtp.data.email })
+       const token = authUser({ id: userEmail?._id})
+       res.send({ status: 'Success', msg: 'Verified', token })
+   } catch (error: any) {
+       res.send(JSON.parse(error.message))
+   }
+ 
+}
+
+export const resetPassword =  async (req: Request, res: Response) => {
+   try {
+      const verifiedToken = verifyUser(req.params.token)
+      if(!verifiedToken) throw new Error('Unauthroized')
+      const newPassword = await hashPassword(req.body.password) 
+   //   @ts-ignore
+     await Admin.updateOne({ _id: verifiedToken.id }, { $set: { password: newPassword } })
+      res.status(200).json({ status: 'Success', msg: 'Password updated' })
+
+  } catch (error: any) {
+      console.log(error.message)
+      res.status(400).send({ status: 'Failed', error: error.message })
+  }
 }

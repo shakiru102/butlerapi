@@ -5,6 +5,10 @@ import { confirmPassword, hashPassword } from "../utils/bcrypt"
 import { authUser, verifyUser } from "../utils/verify"
 import Sendchamp from "sendchamp-sdk"
 import Order from "../models/orderModel"
+// @ts-ignore
+import api  from 'api'
+
+const sdk = api
 
 const sms = new Sendchamp({ publicKey: `sendchamp_live_$2y$10$A3quLpp9DK7zOcdp1kX4t.XRyp.67rst3gLuV.W5LtlgYCeTCnQDS` })
 
@@ -57,20 +61,89 @@ export const userAuth = async (req: Request, res: Response) => {
     }
  }
 
+
  export const forgetUserPassword = async (req: Request, res: Response) => {
      const otpMail = sms.VERIFICATION
      try {
+        const verifyEmail = await User.findOne({ email: req.body.email })
+        if(!verifyEmail) throw new Error(JSON.stringify('This email is not registered'))
         //  @ts-ignore
-       const reference = await otpMail.sendOTP({ channel: 'email', expiration_time: 5, token_type: "numeric", token_length: 6, customer_email_address: 'ashakiru53@gmail.com', sender: 'butlerdevelopers@gmail.com', meta_data: {
-           customer_email_address: 'butlerdevelopers@gmail.com'
+       const reference = await otpMail.sendOTP({ channel: 'email', expiration_time: 5, token_type: "numeric", token_length: 6, customer_email_address: req.body.email, sender: 'butlerdevelopers@gmail.com', meta_data: {
+           customer_email_address: req.body.email
        }  })
        console.log(reference);
-       res.send({msg: 'OTP sent'})
+       if(reference.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: reference.message, errMsg: reference.data}))
+       res.send({ status: 'Success',msg: 'OTP sent', reference: reference.data.reference })
      } catch (error: any) {
          console.log(error.message);
-         res.send({error: 'there was an error'})
+         res.send(JSON.parse(error.message))
          
      }
+ }
+
+ export const verifyEmail = async (req: Request, res: Response) => {
+    const otpMail = sms.VERIFICATION
+    try {
+       const verifyEmail = await User.findOne({ email: req.body.email })
+       if(verifyEmail) throw new Error(JSON.stringify('This email is already registered'))
+       //  @ts-ignore
+      const reference = await otpMail.sendOTP({ channel: 'email', expiration_time: 5, token_type: "numeric", token_length: 6, customer_email_address: req.body.email, sender: 'butlerdevelopers@gmail.com', meta_data: {
+          customer_email_address: req.body.email
+      }  })
+      console.log(reference);
+      if(reference.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: reference.message, errMsg: reference.data}))
+      res.send({ status: 'Success',msg: 'OTP sent', reference: reference.data.reference })
+    } catch (error: any) {
+        res.send(JSON.parse(error.message))
+        
+    }
+}
+
+export const verifyNewUserOtp = async (req: Request, res: Response) => {
+    const otpMail = sms.VERIFICATION
+    
+    try {
+        const verifyOtp = await otpMail.verifyOTP({ verification_code: req.body.code, verification_reference: req.body.reference })
+        console.log(verifyOtp);
+        if(verifyOtp.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: verifyOtp.message, errMsg: verifyOtp.data }))
+        // @ts-ignore
+        res.send({ status: 'Success', msg: 'Verified'})
+    } catch (error: any) {
+        res.send(JSON.parse(error.message))
+    }
+  
+ }
+
+ export const verifyOtp = async (req: Request, res: Response) => {
+    const otpMail = sms.VERIFICATION
+    
+    try {
+        const verifyOtp = await otpMail.verifyOTP({ verification_code: req.body.code, verification_reference: req.body.reference })
+        console.log(verifyOtp);
+        if(verifyOtp.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: verifyOtp.message, errMsg: verifyOtp.data }))
+        // @ts-ignore
+        const userEmail = await User.findOne({ email: verifyOtp.data.email })
+        const token = authUser({ id: userEmail?._id})
+        res.send({ status: 'Success', msg: 'Verified', token })
+    } catch (error: any) {
+        res.send(JSON.parse(error.message))
+    }
+  
+ }
+
+ export const resetPassword =  async (req: Request, res: Response) => {
+    try {
+       const verifiedToken = verifyUser(req.params.token)
+       if(!verifiedToken) throw new Error('Unauthroized')
+       const newPassword = await hashPassword(req.body.password) 
+    //   @ts-ignore
+      await User.updateOne({ _id: verifiedToken.id }, { $set: { password: newPassword } })
+       res.status(200).json({ status: 'Success', msg: 'Password updated' })
+
+   } catch (error: any) {
+       console.log(error.message)
+       res.status(400).send({ status: 'Failed', error: error.message })
+   }
  }
 
 export const getUserSubscription = async (req: Request, res: Response) => {

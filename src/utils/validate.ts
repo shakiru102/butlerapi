@@ -25,6 +25,11 @@ const signinSchema = joi.object<adminDetails>({
     password: joi.string().required().min(8)
     
 })
+const resetPasswordSchema = joi.object<{password: string; confirmPassword: string}>({
+    password: joi.string().required().min(8),
+    confirmPassword: joi.ref('password')
+    
+})
 
 const updateDateStatusSchema = joi.object<{ status: string }>({
   status: joi.string().required()
@@ -89,7 +94,7 @@ const homeCleaningSubscriptionSchema = joi.object<OrderDetails>({
     userID: joi.string().required(),
     username: joi.string().required(),
     apartmentType: joi.string().required(),
-    frequencyCompleted: joi.number().required()
+    frequencyCompleted: joi.number().required(), 
 
 })
 
@@ -144,6 +149,7 @@ const updateSubscriptionSchema = joi.object<updateSubscriptionProps>({
 // })
 
 export const validateSigninSchema = (data: adminDetails | userDetails) => signinSchema.validate(data)
+export const validateResetPasswordSchema = (data: {password: string; confirmPassword: string}) => resetPasswordSchema.validate(data)
 
 export const validateSignupAdminSchema = (data: adminDetails) => signupAdminSchema.validate(data)
 export const validateSignupUserSchema = (data: userDetails) => signupUserSchema.validate(data)

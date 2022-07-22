@@ -2,7 +2,7 @@
   "name": "butler-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "dev": "nodemon index.ts",
     "start": "node dist/index.js",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
+    "api": "^4.5.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",

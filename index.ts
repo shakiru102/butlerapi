@@ -7,11 +7,11 @@ import mongoose from 'mongoose'
 import AdminRoutes from './src/routes/adminroutes'
 import UserRoutes from './src/routes/userroutes'
 import { socket } from './src/socketIO'
-import moment from 'moment'
+
 env.config()
 
 const app = express()
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8000
 const server = http.createServer(app)
 // @ts-ignore
 export const io = socketIO(server, {
@@ -19,7 +19,6 @@ export const io = socketIO(server, {
         origin: '*'
     }
 })
-console.log(moment(Date.now()).format('MM-DD-YYYY'));
 
 socket(io)
 
