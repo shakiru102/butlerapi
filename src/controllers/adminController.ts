@@ -181,6 +181,39 @@ export const forgetUserPassword = async (req: Request, res: Response) => {
     }
 }
 
+export const verifyEmail = async (req: Request, res: Response) => {
+    const otpMail = sms.VERIFICATION
+    try {
+       const verifyEmail = await Admin.findOne({ email: req.body.email })
+       if(verifyEmail) throw new Error(JSON.stringify('This email is already registered'))
+       //  @ts-ignore
+      const reference = await otpMail.sendOTP({ channel: 'email', expiration_time: 5, token_type: "numeric", token_length: 6, customer_email_address: req.body.email, sender: 'butlerdevelopers@gmail.com', meta_data: {
+          customer_email_address: req.body.email
+      }  })
+      console.log(reference);
+      if(reference.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: reference.message, errMsg: reference.data}))
+      res.send({ status: 'Success',msg: 'OTP sent', reference: reference.data.reference })
+    } catch (error: any) {
+        res.send(JSON.parse(error.message))
+        
+    }
+}
+
+export const verifyNewUserOtp = async (req: Request, res: Response) => {
+    const otpMail = sms.VERIFICATION
+    
+    try {
+        const verifyOtp = await otpMail.verifyOTP({ verification_code: req.body.code, verification_reference: req.body.reference })
+        console.log(verifyOtp);
+        if(verifyOtp.status !== 'success') throw new Error(JSON.stringify({ status: 'Failed', msg: verifyOtp.message, errMsg: verifyOtp.data }))
+        // @ts-ignore
+        res.send({ status: 'Success', msg: 'Verified'})
+    } catch (error: any) {
+        res.send(JSON.parse(error.message))
+    }
+  
+ }
+
 export const verifyOtp = async (req: Request, res: Response) => {
    const otpMail = sms.VERIFICATION
    
